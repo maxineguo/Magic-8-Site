@@ -49,28 +49,8 @@
             justify-content: center;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5), inset 0 0 50px rgba(255, 255, 255, 0.1);
         }
-
-        /* Styling for the white "answer" triangle */
-        #answerWindow {
-            width: 150px;
-            height: 150px;
-            background-color: white;
-            border-radius: 50%;
-            clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            transform: rotate(180deg);
-            color: #2c5282; /* Darker text color for contrast on white background */
-            font-size: 1.25rem;
-            font-weight: bold;
-            padding: 10px;
-        }
-
-        /* The '8' inside the ball, hidden when the answer is displayed */
+        
+        /* Styling for the '8' inside the ball */
         #eight {
             position: absolute;
             top: 50%;
@@ -80,6 +60,40 @@
             font-size: 6rem;
             font-weight: bold;
             display: block;
+            pointer-events: none;
+            transition: opacity 0.5s ease-in-out;
+            opacity: 1;
+        }
+
+        /* Styling for the rectangular answer area */
+        #answerMessage {
+            position: absolute;
+            width: 150px;
+            height: 80px;
+            background-color: #2c5282; /* Dark blue background */
+            color: white;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: 10px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+            transition: opacity 0.5s ease-in-out;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* A class to apply the fade-out effect */
+        .fade-out {
+            opacity: 0;
+        }
+        
+        /* A class to apply the fade-in effect */
+        .fade-in {
+            opacity: 1;
         }
     </style>
 </head>
@@ -95,7 +109,7 @@
     <!-- The actual 8-ball element -->
     <div id="eightBall" class="transform transition-all duration-300 hover:scale-105 cursor-pointer" onclick="getAnswer()">
         <div id="eight">8</div>
-        <div id="answerWindow" class="hidden"></div>
+        <div id="answerMessage"></div>
     </div>
 
     <!-- The "Shake the 8-Ball" button is now just for mobile. The ball itself is now clickable -->
@@ -118,37 +132,41 @@
         function getAnswer() {
             const questionInput = document.getElementById('questionInput');
             const eightBall = document.getElementById('eightBall');
-            const answerWindow = document.getElementById('answerWindow');
             const eight = document.getElementById('eight');
+            const answerMessage = document.getElementById('answerMessage');
+
+            // Reset the ball to show the '8' and hide the message
+            eight.classList.remove('fade-out');
+            answerMessage.classList.remove('fade-in');
 
             // Get the user's question. If the input is empty, show an error.
             if (questionInput.value.trim() === "") {
-                eight.style.display = 'block';
-                answerWindow.classList.add("hidden");
-                // Note: Using a timeout to avoid blocking the main thread
-                setTimeout(() => {
-                    alert("Please ask a question first!");
-                }, 10);
+                eight.style.opacity = 0;
+                answerMessage.textContent = "Please ask a question first!";
+                answerMessage.style.color = '#fff';
+                answerMessage.style.backgroundColor = '#ef4444'; // Red background for error
+                answerMessage.classList.add('fade-in');
                 return;
             }
-
-            // Hide the '8' and show the answer window
-            eight.style.display = 'none';
-            answerWindow.classList.add("hidden");
-            answerWindow.textContent = "";
-
+            
+            // Fade out the '8' and show a loading message
+            eight.classList.add('fade-out');
+            answerMessage.style.backgroundColor = '#2c5282'; // Reset to blue background
+            answerMessage.style.color = '#fff';
+            answerMessage.textContent = "...";
+            answerMessage.classList.add('fade-in');
+            
             // Add the shaking animation class
             eightBall.classList.add("shaking");
 
             // After a short delay, display the answer
             setTimeout(() => {
                 eightBall.classList.remove("shaking");
-                answerWindow.classList.remove("hidden");
 
                 const randomIndex = Math.floor(Math.random() * answers.length);
                 const randomAnswer = answers[randomIndex];
 
-                answerWindow.textContent = randomAnswer;
+                answerMessage.textContent = randomAnswer;
             }, 600); // 600ms delay to allow the shake animation to finish
         }
     </script>
