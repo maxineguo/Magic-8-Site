@@ -12,87 +12,144 @@
             background-color: #1a202c; /* Dark background */
             color: #e2e8f0; /* Light text color */
         }
+        
+        /* Keyframes for a simple shaking animation */
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        /* Class to apply the animation */
+        .shaking {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+            transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            perspective: 1000px;
+        }
+
+        /* Styling for the circular ball */
+        #eightBall {
+            width: 300px;
+            height: 300px;
+            background-color: #0d0d0d;
+            border-radius: 50%;
+            border: 15px solid #1a1a1a;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5), inset 0 0 50px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Styling for the white "answer" triangle */
+        #answerWindow {
+            width: 150px;
+            height: 150px;
+            background-color: white;
+            border-radius: 50%;
+            clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transform: rotate(180deg);
+            color: #2c5282; /* Darker text color for contrast on white background */
+            font-size: 1.25rem;
+            font-weight: bold;
+            padding: 10px;
+        }
+
+        /* The '8' inside the ball, hidden when the answer is displayed */
+        #eight {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 6rem;
+            font-weight: bold;
+            display: block;
+        }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-4">
+<body class="flex flex-col items-center justify-center min-h-screen p-4">
 
-    <!-- Main container for the 8-ball application -->
-    <div class="w-full max-w-md bg-gray-800 rounded-2xl shadow-xl p-8 transform transition-all duration-300 hover:scale-105 text-center">
+    <h1 class="text-4xl font-bold text-white mb-6">🔮 The Magic 8-Ball</h1>
 
-        <h1 class="text-4xl font-bold text-white mb-6">🔮 The Magic 8-Ball</h1>
+    <!-- Input field for the user's question -->
+    <input type="text" id="questionInput" placeholder="Ask a yes/no question..."
+           class="w-full max-w-md px-4 py-3 mb-6 text-gray-900 bg-white border border-transparent rounded-lg
+                  focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300">
 
-        <!-- Input field for the user's question -->
-        <input type="text" id="questionInput" placeholder="Ask a yes/no question..."
-               class="w-full px-4 py-3 mb-6 text-gray-900 bg-white border border-transparent rounded-lg
-                      focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300">
-
-        <!-- Button to get an answer -->
-        <button onclick="getAnswer()"
-                class="w-full px-6 py-3 bg-indigo-600 text-white font-bold rounded-full shadow-lg
-                       hover:bg-indigo-700 hover:shadow-xl transform hover:scale-105 transition duration-300 ease-in-out">
-            Shake the 8-Ball
-        </button>
-
-        <!-- Display area for the answer -->
-        <div id="answerDisplay"
-             class="mt-8 text-xl font-semibold p-4 rounded-lg bg-gray-700 min-h-[5rem] flex items-center justify-center">
-            <!-- The answer will appear here -->
-        </div>
-
+    <!-- The actual 8-ball element -->
+    <div id="eightBall" class="transform transition-all duration-300 hover:scale-105 cursor-pointer" onclick="getAnswer()">
+        <div id="eight">8</div>
+        <div id="answerWindow" class="hidden"></div>
     </div>
 
+    <!-- The "Shake the 8-Ball" button is now just for mobile. The ball itself is now clickable -->
+    <button onclick="getAnswer()"
+            class="mt-6 w-full max-w-xs px-6 py-3 bg-indigo-600 text-white font-bold rounded-full shadow-lg
+                   hover:bg-indigo-700 hover:shadow-xl transform hover:scale-105 transition duration-300 ease-in-out">
+        Shake the 8-Ball
+    </button>
+    
     <script>
-        // A list of possible answers for the Magic 8-Ball
         const answers = [
-            "It is certain.",
-            "It is decidedly so.",
-            "Without a doubt.",
-            "Yes - definitely.",
-            "You may rely on it.",
-            "As I see it, yes.",
-            "Most likely.",
-            "Outlook good.",
-            "Yes.",
-            "Signs point to yes.",
-            "Reply hazy, try again.",
-            "Ask again later.",
-            "Better not tell you now.",
-            "Cannot predict now.",
-            "Concentrate and ask again.",
-            "Don't count on it.",
-            "My reply is no.",
-            "My sources say no.",
-            "Outlook not so good.",
-            "Very doubtful."
+            "It is certain.", "It is decidedly so.", "Without a doubt.", "Yes - definitely.",
+            "You may rely on it.", "As I see it, yes.", "Most likely.", "Outlook good.",
+            "Yes.", "Signs point to yes.", "Reply hazy, try again.", "Ask again later.",
+            "Better not tell you now.", "Cannot predict now.", "Concentrate and ask again.",
+            "Don't count on it.", "My reply is no.", "My sources say no.",
+            "Outlook not so good.", "Very doubtful."
         ];
 
-        /**
-         * This function handles the logic for shaking the 8-ball.
-         * It selects a random answer from the 'answers' array and displays it.
-         */
         function getAnswer() {
-            // Get the input element and the display area
             const questionInput = document.getElementById('questionInput');
-            const answerDisplay = document.getElementById('answerDisplay');
+            const eightBall = document.getElementById('eightBall');
+            const answerWindow = document.getElementById('answerWindow');
+            const eight = document.getElementById('eight');
 
             // Get the user's question. If the input is empty, show an error.
             if (questionInput.value.trim() === "") {
-                answerDisplay.textContent = "Please ask a question first!";
-                answerDisplay.classList.add("text-red-400");
-                return; // Stop the function here
+                eight.style.display = 'block';
+                answerWindow.classList.add("hidden");
+                // Note: Using a timeout to avoid blocking the main thread
+                setTimeout(() => {
+                    alert("Please ask a question first!");
+                }, 10);
+                return;
             }
 
-            // Remove the error class if it's there from a previous attempt
-            answerDisplay.classList.remove("text-red-400");
+            // Hide the '8' and show the answer window
+            eight.style.display = 'none';
+            answerWindow.classList.add("hidden");
+            answerWindow.textContent = "";
 
-            // Generate a random number based on the number of answers available
-            const randomIndex = Math.floor(Math.random() * answers.length);
+            // Add the shaking animation class
+            eightBall.classList.add("shaking");
 
-            // Get the random answer from the array
-            const randomAnswer = answers[randomIndex];
+            // After a short delay, display the answer
+            setTimeout(() => {
+                eightBall.classList.remove("shaking");
+                answerWindow.classList.remove("hidden");
 
-            // Display the random answer in the designated area
-            answerDisplay.textContent = randomAnswer;
+                const randomIndex = Math.floor(Math.random() * answers.length);
+                const randomAnswer = answers[randomIndex];
+
+                answerWindow.textContent = randomAnswer;
+            }, 600); // 600ms delay to allow the shake animation to finish
         }
     </script>
 
