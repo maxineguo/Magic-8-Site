@@ -85,16 +85,6 @@
             opacity: 0;
             pointer-events: none;
         }
-
-        /* A class to apply the fade-out effect */
-        .fade-out {
-            opacity: 0;
-        }
-        
-        /* A class to apply the fade-in effect */
-        .fade-in {
-            opacity: 1;
-        }
     </style>
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen p-4">
@@ -129,48 +119,52 @@
             "Outlook not so good.", "Very doubtful."
         ];
 
+        // This function runs once on page load to set the initial message
+        window.onload = function() {
+            const answerMessage = document.getElementById('answerMessage');
+            answerMessage.textContent = "Waiting for your question...";
+            answerMessage.style.backgroundColor = '#2c5282';
+            answerMessage.style.opacity = '1';
+        }
+
         function getAnswer() {
             const questionInput = document.getElementById('questionInput');
             const eightBall = document.getElementById('eightBall');
             const eight = document.getElementById('eight');
             const answerMessage = document.getElementById('answerMessage');
 
-            // Reset the message area and make the '8' visible
-            answerMessage.classList.remove('fade-in');
-            eight.classList.remove('fade-out');
+            // Reset the message area and make the '8' visible again
+            eight.style.opacity = '1';
+            answerMessage.style.opacity = '0';
+            answerMessage.style.backgroundColor = '#2c5282';
             
             // Get the user's question. If the input is empty, show an error.
             if (questionInput.value.trim() === "") {
-                // Fade out the '8' and display the error message immediately
-                eight.classList.add('fade-out');
-                answerMessage.textContent = "Please ask a question first!";
-                answerMessage.style.backgroundColor = '#ef4444'; // Red background for error
-                answerMessage.classList.add('fade-in');
+                // Wait a moment for the '8' to become visible, then fade it out and show the error
+                setTimeout(() => {
+                    eight.style.opacity = '0';
+                    answerMessage.textContent = "Please ask a question first!";
+                    answerMessage.style.backgroundColor = '#ef4444'; // Red background for error
+                    answerMessage.style.opacity = '1';
+                }, 100);
                 return;
             }
             
             // Fade out the '8' and add the shaking animation
-            eight.classList.add('fade-out');
+            eight.style.opacity = '0';
             eightBall.classList.add("shaking");
             
             // After a short delay to allow the shake animation to finish, display the answer.
             setTimeout(() => {
                 eightBall.classList.remove("shaking");
 
-                // Reset the background to the normal color
-                answerMessage.style.backgroundColor = '#2c5282'; 
-
                 // Get a random answer and display it
                 const randomIndex = Math.floor(Math.random() * answers.length);
                 const randomAnswer = answers[randomIndex];
                 answerMessage.textContent = randomAnswer;
 
-                // Force a browser reflow to ensure the CSS transition is applied
-                // This fixes the issue where the answer was not fading in correctly
-                void answerMessage.offsetHeight;
-
-                // Fade in the answer message
-                answerMessage.classList.add('fade-in');
+                // Make the answer message visible
+                answerMessage.style.opacity = '1';
             }, 600); // 600ms delay to allow the shake animation to finish
         }
     </script>
