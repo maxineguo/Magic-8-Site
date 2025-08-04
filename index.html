@@ -135,38 +135,38 @@
             const eight = document.getElementById('eight');
             const answerMessage = document.getElementById('answerMessage');
 
-            // Reset the ball to show the '8' and hide the message
-            eight.classList.remove('fade-out');
+            // Reset the message area and fade in the '8'
             answerMessage.classList.remove('fade-in');
-
+            eight.classList.remove('fade-out');
+            
             // Get the user's question. If the input is empty, show an error.
             if (questionInput.value.trim() === "") {
-                eight.style.opacity = 0;
+                // Fade out the '8' and display the error message immediately
+                eight.classList.add('fade-out');
                 answerMessage.textContent = "Please ask a question first!";
-                answerMessage.style.color = '#fff';
                 answerMessage.style.backgroundColor = '#ef4444'; // Red background for error
                 answerMessage.classList.add('fade-in');
                 return;
             }
             
-            // Fade out the '8' and show a loading message
+            // Fade out the '8' and add the shaking animation
             eight.classList.add('fade-out');
-            answerMessage.style.backgroundColor = '#2c5282'; // Reset to blue background
-            answerMessage.style.color = '#fff';
-            answerMessage.textContent = "...";
-            answerMessage.classList.add('fade-in');
-            
-            // Add the shaking animation class
             eightBall.classList.add("shaking");
 
-            // After a short delay, display the answer
+            // After a short delay to allow the shake animation to finish, display the answer.
             setTimeout(() => {
                 eightBall.classList.remove("shaking");
 
+                // Reset the background to the normal color
+                answerMessage.style.backgroundColor = '#2c5282'; 
+
+                // Get a random answer and display it
                 const randomIndex = Math.floor(Math.random() * answers.length);
                 const randomAnswer = answers[randomIndex];
-
                 answerMessage.textContent = randomAnswer;
+
+                // Fade in the answer message
+                answerMessage.classList.add('fade-in');
             }, 600); // 600ms delay to allow the shake animation to finish
         }
     </script>
