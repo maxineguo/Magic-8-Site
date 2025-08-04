@@ -135,7 +135,7 @@
             const eight = document.getElementById('eight');
             const answerMessage = document.getElementById('answerMessage');
 
-            // Reset the message area and fade in the '8'
+            // Reset the message area and make the '8' visible
             answerMessage.classList.remove('fade-in');
             eight.classList.remove('fade-out');
             
@@ -152,7 +152,7 @@
             // Fade out the '8' and add the shaking animation
             eight.classList.add('fade-out');
             eightBall.classList.add("shaking");
-
+            
             // After a short delay to allow the shake animation to finish, display the answer.
             setTimeout(() => {
                 eightBall.classList.remove("shaking");
@@ -164,6 +164,10 @@
                 const randomIndex = Math.floor(Math.random() * answers.length);
                 const randomAnswer = answers[randomIndex];
                 answerMessage.textContent = randomAnswer;
+
+                // Force a browser reflow to ensure the CSS transition is applied
+                // This fixes the issue where the answer was not fading in correctly
+                void answerMessage.offsetHeight;
 
                 // Fade in the answer message
                 answerMessage.classList.add('fade-in');
