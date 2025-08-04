@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magic 8-Ball</title>
+    <!-- Tailwind CSS CDN for quick and easy styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c; /* Dark background */
+            color: #e2e8f0; /* Light text color */
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <!-- Main container for the 8-ball application -->
+    <div class="w-full max-w-md bg-gray-800 rounded-2xl shadow-xl p-8 transform transition-all duration-300 hover:scale-105 text-center">
+
+        <h1 class="text-4xl font-bold text-white mb-6">🔮 The Magic 8-Ball</h1>
+
+        <!-- Input field for the user's question -->
+        <input type="text" id="questionInput" placeholder="Ask a yes/no question..."
+               class="w-full px-4 py-3 mb-6 text-gray-900 bg-white border border-transparent rounded-lg
+                      focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300">
+
+        <!-- Button to get an answer -->
+        <button onclick="getAnswer()"
+                class="w-full px-6 py-3 bg-indigo-600 text-white font-bold rounded-full shadow-lg
+                       hover:bg-indigo-700 hover:shadow-xl transform hover:scale-105 transition duration-300 ease-in-out">
+            Shake the 8-Ball
+        </button>
+
+        <!-- Display area for the answer -->
+        <div id="answerDisplay"
+             class="mt-8 text-xl font-semibold p-4 rounded-lg bg-gray-700 min-h-[5rem] flex items-center justify-center">
+            <!-- The answer will appear here -->
+        </div>
+
+    </div>
+
+    <script>
+        // A list of possible answers for the Magic 8-Ball
+        const answers = [
+            "It is certain.",
+            "It is decidedly so.",
+            "Without a doubt.",
+            "Yes - definitely.",
+            "You may rely on it.",
+            "As I see it, yes.",
+            "Most likely.",
+            "Outlook good.",
+            "Yes.",
+            "Signs point to yes.",
+            "Reply hazy, try again.",
+            "Ask again later.",
+            "Better not tell you now.",
+            "Cannot predict now.",
+            "Concentrate and ask again.",
+            "Don't count on it.",
+            "My reply is no.",
+            "My sources say no.",
+            "Outlook not so good.",
+            "Very doubtful."
+        ];
+
+        /**
+         * This function handles the logic for shaking the 8-ball.
+         * It selects a random answer from the 'answers' array and displays it.
+         */
+        function getAnswer() {
+            // Get the input element and the display area
+            const questionInput = document.getElementById('questionInput');
+            const answerDisplay = document.getElementById('answerDisplay');
+
+            // Get the user's question. If the input is empty, show an error.
+            if (questionInput.value.trim() === "") {
+                answerDisplay.textContent = "Please ask a question first!";
+                answerDisplay.classList.add("text-red-400");
+                return; // Stop the function here
+            }
+
+            // Remove the error class if it's there from a previous attempt
+            answerDisplay.classList.remove("text-red-400");
+
+            // Generate a random number based on the number of answers available
+            const randomIndex = Math.floor(Math.random() * answers.length);
+
+            // Get the random answer from the array
+            const randomAnswer = answers[randomIndex];
+
+            // Display the random answer in the designated area
+            answerDisplay.textContent = randomAnswer;
+        }
+    </script>
+
+</body>
+</html>
