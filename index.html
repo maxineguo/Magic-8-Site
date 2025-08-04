@@ -119,30 +119,23 @@
             "Outlook not so good.", "Very doubtful."
         ];
 
-        // This function runs once on page load to set the initial message
-        window.onload = function() {
-            const answerMessage = document.getElementById('answerMessage');
-            answerMessage.textContent = "Waiting for your question...";
-            answerMessage.style.backgroundColor = '#2c5282';
-            answerMessage.style.opacity = '1';
-        }
-
         function getAnswer() {
             const questionInput = document.getElementById('questionInput');
             const eightBall = document.getElementById('eightBall');
             const eight = document.getElementById('eight');
             const answerMessage = document.getElementById('answerMessage');
 
-            // Reset the message area and make the '8' visible again
-            eight.style.opacity = '1';
+            // Reset the message area and ensure the '8' is visible for the next question
             answerMessage.style.opacity = '0';
-            answerMessage.style.backgroundColor = '#2c5282';
+            eight.style.opacity = '1';
             
             // Get the user's question. If the input is empty, show an error.
             if (questionInput.value.trim() === "") {
-                // Wait a moment for the '8' to become visible, then fade it out and show the error
+                // Fade out the '8'
+                eight.style.opacity = '0';
+                
+                // Show the error message
                 setTimeout(() => {
-                    eight.style.opacity = '0';
                     answerMessage.textContent = "Please ask a question first!";
                     answerMessage.style.backgroundColor = '#ef4444'; // Red background for error
                     answerMessage.style.opacity = '1';
@@ -150,8 +143,10 @@
                 return;
             }
             
-            // Fade out the '8' and add the shaking animation
+            // Fade out the '8'
             eight.style.opacity = '0';
+
+            // Add the shaking animation
             eightBall.classList.add("shaking");
             
             // After a short delay to allow the shake animation to finish, display the answer.
@@ -162,6 +157,9 @@
                 const randomIndex = Math.floor(Math.random() * answers.length);
                 const randomAnswer = answers[randomIndex];
                 answerMessage.textContent = randomAnswer;
+
+                // Reset the background to the normal color
+                answerMessage.style.backgroundColor = '#2c5282';
 
                 // Make the answer message visible
                 answerMessage.style.opacity = '1';
